@@ -32,7 +32,8 @@ model ClothType {
 
 model Cloth {
   id          String   @id @default(uuid()) @db.Uuid
-  active      Boolean
+  active      Boolean  @default(true)
+  description String?
   clothTypeId String   @db.Uuid
   colorId     Int
   sizeId      Int
