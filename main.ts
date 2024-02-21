@@ -78,6 +78,36 @@ app.get('/cloth/types', async (req, res) => {
   res.json(clothTypes)
 })
 
+app.post("/cloth", async (req, res) => {
+  const {
+    description, clothTypeId, colorId, sizeId
+  } = req.body
+
+  const result = await prisma.cloth.create({
+    data: {
+      description,
+      clothTypeId,
+      colorId,
+      sizeId
+    },
+  })
+  res.json(result)
+})
+
+app.get('/cloth/:id', async (req, res) => {
+  const { id } = req.params
+  const cloth = await prisma.cloth.findUnique({
+    where: { id: String(id) },
+  })
+
+  res.json(cloth)
+})
+
+
+app.get('/cloths', async (req, res) => {
+  const cloths = await prisma.cloth.findMany({ take: 50 })
+  res.json(cloths)
+})
 
 const server = app.listen(3000, () =>
   console.log(`
