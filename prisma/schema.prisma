@@ -16,21 +16,56 @@ model User {
 }
 
 model Color {
-  id      String  @id @default(uuid()) @db.Uuid
+  id      Int     @id @default(autoincrement())
   name    String
   hexCode String?
+  Cloth   Cloth[]
 }
 
 model Size {
-  id   String @id @default(uuid()) @db.Uuid
-  name String
+  id        Int     @id @default(autoincrement())
+  name      String
+  shortname String
+  Cloth     Cloth[]
 }
 
 model ClothType {
-  id   String @id @default(uuid()) @db.Uuid
-  name String
+  id    String  @id @default(uuid()) @db.Uuid
+  name  String
+  Cloth Cloth[]
 }
 
 model Cloth {
-  id String @id @default(uuid()) @db.Uuid
+  id          String   @id @default(uuid()) @db.Uuid
+  active      Boolean
+  clothTypeId String   @db.Uuid
+  colorId     Int
+  sizeId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  color  Color     @relation(fields: [colorId], references: [id])
+  size   Size      @relation(fields: [sizeId], references: [id])
+  type   ClothType @relation(fields: [clothTypeId], references: [id])
+  Rental Rental[]
+}
+
+model Client {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  lastName  String
+  lastName2 String?
+  Rental    Rental[]
+}
+
+model Rental {
+  id             Int      @id @default(autoincrement())
+  rentDate       DateTime
+  devolutionDate DateTime
+  clientId       String   @db.Uuid
+  clothId        String   @db.Uuid
+
+  client Client @relation(fields: [clientId], references: [id])
+  cloth  Cloth  @relation(fields: [clothId], references: [id])
+  // @@id([clientId, clothId, rentDate])
 }
